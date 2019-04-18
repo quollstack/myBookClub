@@ -11,7 +11,6 @@ import {
   Modal,
   CardPanel,
   DatePicker,
-  TimePicker,
 } from 'react-materialize';
 
 const BookClubView = ({
@@ -27,6 +26,7 @@ const BookClubView = ({
   handleCommentText,
   submitComment,
   handleNextMeeting,
+  setNextMeeting,
 } ) => {
   console.log(club, user);
   return (
@@ -134,9 +134,7 @@ const BookClubView = ({
           <Card header={<h4 className="header">Choose Next Meeting:</h4>} >
             <Row>
               <Col>
-              <DatePicker 
-              label='Click to Pick Next Date' 
-              onChange={(event) => {handleNextMeeting(event.toString().split(' 00:').shift())}}></DatePicker>
+                <input type="date" onChange={(event) => {handleNextMeeting(event.target.value)}}></input>
               </Col>
             </Row>
           </Card>
