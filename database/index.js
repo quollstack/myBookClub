@@ -128,14 +128,14 @@ Book.belongsToMany(Group, {through: 'books_groups'});
 Poll.hasOne(UserGroup);
 UserGroup.belongsTo(Poll);
 UserGroup.belongsTo(Book, {as: 'selectedBookId'})
-// UserGroup.belongsTo(User);
-// UserGroup.belongsTo(Group);
-// User.hasMany(UserGroup);
-// Group.hasMany(UserGroup);
-// BookGroup.belongsTo(Book);
-// BookGroup.belongsTo(Group);
-// Book.hasMany(BookGroup);
-// Group.hasMany(BookGroup);
+UserGroup.belongsTo(User);
+UserGroup.belongsTo(Group);
+User.hasMany(UserGroup);
+Group.hasMany(UserGroup);
+BookGroup.belongsTo(Book);
+BookGroup.belongsTo(Group);
+Book.hasMany(BookGroup);
+Group.hasMany(BookGroup);
 sequelize.sync();
 
 
