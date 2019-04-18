@@ -11,6 +11,7 @@ import {
   Modal,
   CardPanel,
   DatePicker,
+  TimePicker,
 } from 'react-materialize';
 
 const BookClubView = ({
