@@ -271,6 +271,10 @@ const removeUserFromGroup = (userId, groupId) => {
   });
 }
 
+const makePoll = (groupId, bookIds) => {
+  
+}
+
 module.exports = {
   verifyUser,
   createNewGroup,
