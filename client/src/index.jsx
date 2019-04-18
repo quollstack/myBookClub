@@ -58,6 +58,7 @@ class Landing extends React.Component {
     this.getGroupComments = this.getGroupComments.bind(this); //gets all comments in given group, for use in rendering comments on click of a group card
     this.logout = this.logout.bind(this);
     this.addBookToGroup = this.addBookToGroup.bind(this);
+    this.handleNextMeeting = this.handleNextMeeting.bind(this);
   }
 
   componentDidMount() {
@@ -99,6 +100,7 @@ class Landing extends React.Component {
         this.setState({
           bookClubs: response.data,
         });
+        
       })
       .catch(err => {
         console.error(err);
@@ -537,6 +539,10 @@ class Landing extends React.Component {
     })
   } 
 
+  handleNextMeeting (nextMeeting) {
+    console.log(this.state.currentClub.id, nextMeeting);
+  }
+
 
   renderMain() {
     const {
@@ -586,6 +592,7 @@ class Landing extends React.Component {
         clubBookComment={clubBookComment} 
         handleCommentText={this.handleCommentText} 
         submitComment={this.submitComment}
+        handleNextMeeting={this.handleNextMeeting}
       />;
     }
   }

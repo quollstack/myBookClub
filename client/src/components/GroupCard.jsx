@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Icon } from 'react-materialize';
+import { Row, Col, Icon, DatePicker } from 'react-materialize';
 
 const GroupCard = ({ club, book, userId }) => {
   if (book && club) {
