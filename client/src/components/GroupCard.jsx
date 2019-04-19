@@ -36,7 +36,7 @@ const GroupCard = ({ club, book, userId, nextMeeting }) => {
         </Row>
         <Row>
           <Col>
-            Next Meeting: {club.nextMeeting || nextMeeting}
+            Next Meeting: {club.nextMeeting || 'no date selected'}
           </Col>
         </Row>
       </div>

@@ -102,7 +102,6 @@ class Landing extends React.Component {
         this.setState({
           bookClubs: response.data,
         });
-        
       })
       .catch(err => {
         console.error(err);
@@ -563,8 +562,8 @@ class Landing extends React.Component {
       sampleData,
       currentBook,
       currentClub,
-      clubBookComments, 
-      clubBookComment,  
+      clubBookComments,
+      clubBookComment,
       currentClubUsers,
       user,
       bookSearchChoice,

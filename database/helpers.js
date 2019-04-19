@@ -271,6 +271,12 @@ const removeUserFromGroup = (userId, groupId) => {
   });
 }
 
+const addMeetingToGroup = (groupId, nextMeeting) => {
+  return Group.update(
+    {nextMeeting: nextMeeting}, 
+    {where: {id: groupId}})
+}
+
 const makePoll = (groupId, bookIds) => {
   
 }
@@ -291,4 +297,5 @@ module.exports = {
   deleteGroup,
   removeUserFromGroup,
   deseralizeUser,
+  addMeetingToGroup,
 };
