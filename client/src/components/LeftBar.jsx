@@ -2,12 +2,12 @@ import React from 'react';
 import GroupCard from './GroupCard.jsx'
 import { Row, Col, CardPanel } from 'react-materialize'
 
-const LeftBar = ({ club, book, chooseClub, chooseView }) => (
+const LeftBar = ({ club, book, chooseClub, chooseView, nextMeeting }) => (
   <div className="leftbar blue-grey lighten-3">
     <Row>
       <Col s={12}>
           <h5 className="white-text">
-            Next Meeting
+            Book Clubs
           </h5>
       </Col>
     </Row>
@@ -15,6 +15,7 @@ const LeftBar = ({ club, book, chooseClub, chooseView }) => (
       <GroupCard className="next-meeting"
         club={club} 
         book={book}
+        nextMeeting={nextMeeting}
         onClick={() => {
           chooseView('club view');
           chooseClub(club, book);

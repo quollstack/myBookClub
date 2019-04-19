@@ -542,15 +542,16 @@ class Landing extends React.Component {
   } 
 
   handleNextMeeting (nextMeeting) {
-    this.state.nextMeeting = nextMeeting.split('T')[0] + ' ' + nextMeeting.split('T')[1] + ":00";
-    this.setNextMeeting();
+    nextMeeting = nextMeeting.split('T')[0] + ' ' + nextMeeting.split('T')[1] + ":00";
+    this.setState({ nextMeeting: nextMeeting })
+    this.setNextMeeting(nextMeeting);
     console.log(this.state.nextMeeting);
   }
 
-  setNextMeeting () {
+  setNextMeeting (nextMeeting) {
     axios.patch('/groups/nextMeeting', {
       groupId: this.state.currentClub.id,
-      nextMeeting: this.state.nextMeeting,
+      nextMeeting: nextMeeting,
     })
   }
 
@@ -579,6 +580,7 @@ class Landing extends React.Component {
           clubs={bookClubs}
           books={sampleData}
           userId={user.id}
+          nextMeeting={nextMeeting}
         />
       );
     } else if (view === 'settings') {
@@ -621,6 +623,7 @@ class Landing extends React.Component {
       bookSearchResults,
       autocompleteObject,
       bookSearchChoice,
+      nextMeeting,
     } = this.state; 
 
     if (!loggedIn) {
@@ -630,6 +633,7 @@ class Landing extends React.Component {
         <div>
           <LeftBar
             book={bookClubs.length ? bookClubs[0].book : {}}
+            nextMeeting={nextMeeting}
             club={bookClubs[0]}
             chooseView={this.chooseView}
             chooseClub={this.chooseClub}
