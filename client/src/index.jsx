@@ -35,6 +35,7 @@ class Landing extends React.Component {
       autocompleteObject: {},
       clubBookComments: [],
       clubBookComment: '',
+      nextMeeting: '',
     };
 
     this.renderMain = this.renderMain.bind(this);
@@ -58,6 +59,8 @@ class Landing extends React.Component {
     this.getGroupComments = this.getGroupComments.bind(this); //gets all comments in given group, for use in rendering comments on click of a group card
     this.logout = this.logout.bind(this);
     this.addBookToGroup = this.addBookToGroup.bind(this);
+    this.handleNextMeeting = this.handleNextMeeting.bind(this);
+    this.setNextMeeting = this.setNextMeeting.bind(this);
   }
 
   componentDidMount() {
@@ -99,6 +102,7 @@ class Landing extends React.Component {
         this.setState({
           bookClubs: response.data,
         });
+        
       })
       .catch(err => {
         console.error(err);
@@ -537,6 +541,19 @@ class Landing extends React.Component {
     })
   } 
 
+  handleNextMeeting (nextMeeting) {
+    this.state.nextMeeting = nextMeeting.split('T')[0] + ' ' + nextMeeting.split('T')[1] + ":00";
+    this.setNextMeeting();
+    console.log(this.state.nextMeeting);
+  }
+
+  setNextMeeting () {
+    axios.patch('/groups/nextMeeting', {
+      groupId: this.state.currentClub.id,
+      nextMeeting: this.state.nextMeeting,
+    })
+  }
+
 
   renderMain() {
     const {
@@ -551,6 +568,7 @@ class Landing extends React.Component {
       user,
       bookSearchChoice,
       bookSearchResults,
+      nextMeeting,
     } = this.state;
     if (view === 'groups') {
       return (
@@ -576,6 +594,8 @@ class Landing extends React.Component {
         book={currentBook}
         userList={currentClubUsers}
         user={user}
+        nextMeeting={nextMeeting}
+        setNextMeeting={this.setNextMeeting}
         addBookToGroup={this.addBookToGroup}
         handleBookSearchInput={this.handleBookSearchInput}
         handleBookSearchSubmit={this.handleBookSearchSubmit}
@@ -586,6 +606,7 @@ class Landing extends React.Component {
         clubBookComment={clubBookComment} 
         handleCommentText={this.handleCommentText} 
         submitComment={this.submitComment}
+        handleNextMeeting={this.handleNextMeeting}
       />;
     }
   }

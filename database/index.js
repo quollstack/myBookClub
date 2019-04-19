@@ -68,6 +68,40 @@ Note.init({
   sequelize,
   modelName: 'note'
 })
+
+class Poll extends Model {}
+Poll.init({
+  book1Count: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  },
+  book2Count: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  },
+  book3Count: Sequelize.INTEGER,
+  book4Count: Sequelize.INTEGER,
+  currentVotes: {
+    type: Sequelize.INTEGER,
+    defaultValue: 0,
+  },
+  maxVotes: Sequelize.INTEGER,
+  totalBooks: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  }
+}, {
+  sequelize,
+  modelName: 'poll',
+})
+
+Poll.belongsTo(Book, {as: 'book1'});
+Poll.belongsTo(Book, {as: 'book2'});
+Poll.belongsTo(Book, {as: 'book3'});
+Poll.belongsTo(Book, {as: 'book4'});
+Group.hasOne(Poll);
+Poll.belongsTo(Group);
+
 const UserGroup = sequelize.define('users_groups');
 const UserBook = sequelize.define('users_books');
 const BookGroup = sequelize.define('books_groups');
@@ -89,6 +123,9 @@ User.belongsToMany(Book, {through: 'users_books'});
 Book.belongsToMany(User, {through: 'users_books'});
 Group.belongsToMany(Book, {through: 'books_groups'});
 Book.belongsToMany(Group, {through: 'books_groups'});
+Poll.hasOne(UserGroup);
+UserGroup.belongsTo(Poll);
+UserGroup.belongsTo(Book, {as: 'selectedBookId'})
 UserGroup.belongsTo(User);
 UserGroup.belongsTo(Group);
 User.hasMany(UserGroup);
@@ -109,4 +146,5 @@ module.exports = {
   UserGroup,
   UserBook,
   BookGroup,
-}
+  Poll,
+};
