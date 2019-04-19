@@ -151,7 +151,7 @@ const BookClubView = ({
       </Modal>
       </Col>
       <Col s={4}>
-        <ModalChat />
+        <ModalChat club={club} user={user} />
       </Col>
       <Col s={4}>
         <h5>Comments</h5>
