@@ -1,5 +1,5 @@
 import React from 'react';
-import {TextInput, Modal, Button} from 'react-materialize';
+import { TextInput, Modal, Button, Row, Col } from 'react-materialize';
 
 class ModalChat extends React.Component {
   constructor(props) {
@@ -9,10 +9,18 @@ class ModalChat extends React.Component {
 
   render() {
     return (
-    <Modal header="Modal Header" trigger={<Button>Group Chat</Button>}>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
-      </p>
+    <Modal header="Group Chat" fixedFooter trigger={<Button>Group Chat</Button>}>
+      <Row>
+        <Col>
+          <p>blablhablhasbalhslahjhbkajb</p>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <TextInput s={10} m={10} l={10} xl={10} icon="chat" placeholder="Enter message..." />
+          <Button floating className="teal" waves="light" icon="send" />
+        </Col>
+      </Row>
     </Modal>
     )
   }
