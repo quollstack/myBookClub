@@ -10,6 +10,7 @@ import {
   Icon,
   Modal,
   CardPanel,
+  DatePicker,
 } from 'react-materialize';
 
 const BookClubView = ({
@@ -23,8 +24,12 @@ const BookClubView = ({
   bookSearchResults,
   clubBookComments,
   handleCommentText,
-  submitComment
-} ) => (
+  submitComment,
+  handleNextMeeting,
+  setNextMeeting,
+} ) => {
+  console.log(club, user);
+  return (
   <div className="bodygrid blue-grey lighten-5">
   <Row>
     <Col s={12} xl={6}>
@@ -125,6 +130,15 @@ const BookClubView = ({
         }
       </Card>
     </Col>
+        <Col s={12} xl={6}>
+          <Card header={<h4 className="header">Choose Next Meeting:</h4>} >
+            <Row>
+              <Col>
+                <input type="datetime-local" onChange={(event) => {handleNextMeeting(event.target.value)}}></input>
+              </Col>
+            </Row>
+          </Card>
+        </Col>
   </Row>
     <Row>
       <Col s={6}>
@@ -173,5 +187,5 @@ const BookClubView = ({
     </Row>
   </div>
 )
-
+                }
 export default BookClubView;

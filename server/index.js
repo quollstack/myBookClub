@@ -223,6 +223,11 @@ app.patch('/groups/removeUser', (req, res) => {
   });
 })
 
+app.patch('/groups/nextMeeting', (req, res) => {
+  console.log(req.body)
+  res.send('done')
+})
+
 /**
  * Creates a new group in the database. Returns a promise that resolves to a group object.
  */
