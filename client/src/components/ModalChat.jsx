@@ -1,7 +1,9 @@
 import React from 'react';
+import socketIOClient from "socket.io-client";
 import MessageList from './MessageList.jsx';
 import { Textarea, Modal, Button, Row, Col } from 'react-materialize';
 import fakeMessages from '../../../database/sample-data/fakeMessages';
+const io = socketIOClient;
 
 class ModalChat extends React.Component {
   constructor(props) {
@@ -11,8 +13,15 @@ class ModalChat extends React.Component {
       messages: fakeMessages
     };
 
+    this.socket = io();
+
+    this.socket.on('RECIEVE_MESSAGE', (message) => {
+      this.addMessage(message);
+    })
+
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.addMessage = this.addMessage.bind(this);
   }
 
   handleChange(e) {
@@ -20,6 +29,14 @@ class ModalChat extends React.Component {
     this.setState({
       messageValue: value,
     })
+  }
+
+  addMessage(message) {
+    console.log(message);
+    this.setState({
+      messages: [...this.state.messages, message]
+    });
+    console.log(this.state.messages);
   }
 
   handleSubmit(e) {
@@ -32,7 +49,7 @@ class ModalChat extends React.Component {
       group: club.name,
       groupId: club.id,
     }
-    console.log(newMessage);
+    this.socket.emit('SEND_MESSAGE', newMessage);
     this.setState({
       messageValue: ''
     });

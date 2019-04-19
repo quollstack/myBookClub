@@ -4,6 +4,7 @@ require('dotenv').config(); // required dotenv for access to environmental varia
 
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.MASTER_USER, process.env.DB_PASSWORD, {
   dialect: 'mysql',
+  logging: false
 })
 
 // sequelize

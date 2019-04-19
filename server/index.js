@@ -35,8 +35,9 @@ const {
 } = require('../database/helpers')
 
 
-
 const app = express();
+const http = require('http').Server(app);
+const io =  require('socket.io')(http);
 
 const corsOption = {
   origin: true,
@@ -349,7 +350,19 @@ app.get('/logout', function (req, res){
   });
 });
 
-app.listen(3000, () => {
+/**
+ * socket.io stuff here
+ */
+io.on('connection', (socket) => {
+  console.log('a user connected')
+
+  socket.on('SEND_MESSAGE', (data) => {
+    console.log(data);
+    io.emit('RECIEVE_MESSAGE', data)
+  })
+})
+
+http.listen(3000, () => {
   console.warn('listening on port 3000!');
 });
 
