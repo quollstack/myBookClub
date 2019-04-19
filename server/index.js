@@ -228,9 +228,9 @@ app.patch('/groups/nextMeeting', (req, res) => {
   console.log(req.body)
   addMeetingToGroup(req.body.groupId, req.body.nextMeeting)
   .then ((results) => {
-    console.log(results);
+    res.send('done');
   })
-  res.send('done')
+  
 })
 
 /**

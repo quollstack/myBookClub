@@ -134,6 +134,9 @@ const BookClubView = ({
           <Card header={<h4 className="header">Choose Next Meeting:</h4>} >
             <Row>
               <Col>
+              Next Meeting: {club.nextMeeting || 'select date below'}
+              </Col>
+              <Col>
                 <input type="datetime-local" onChange={(event) => {handleNextMeeting(event.target.value)}}></input>
               </Col>
             </Row>

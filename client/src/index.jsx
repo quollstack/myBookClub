@@ -552,6 +552,10 @@ class Landing extends React.Component {
       groupId: this.state.currentClub.id,
       nextMeeting: nextMeeting,
     })
+    .then(() => {
+      // console.log(this.state.user.id)
+      this.getGroups(this.state.user.id)
+    })
   }
 
 
