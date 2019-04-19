@@ -3,8 +3,6 @@ const Sequelize = require('sequelize');
 require('dotenv').config(); // required dotenv for access to environmental variables
 
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.MASTER_USER, process.env.DB_PASSWORD, {
-  host: process.env.HOST,
-  port: process.env.PORT,
   dialect: 'mysql',
 })
 
