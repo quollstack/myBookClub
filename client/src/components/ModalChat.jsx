@@ -1,4 +1,5 @@
 import React from 'react';
+import * as ReactDOM from 'react-dom';
 import socketIOClient from "socket.io-client";
 import MessageList from './MessageList.jsx';
 import { Textarea, Modal, Button, Row, Col } from 'react-materialize';
@@ -22,6 +23,7 @@ class ModalChat extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.addMessage = this.addMessage.bind(this);
+    this.scrollToBottom = this.scrollToBottom.bind(this);
   }
 
   handleChange(e) {
@@ -36,7 +38,6 @@ class ModalChat extends React.Component {
     this.setState({
       messages: [...this.state.messages, message]
     });
-    console.log(this.state.messages);
   }
 
   handleSubmit(e) {
@@ -56,14 +57,19 @@ class ModalChat extends React.Component {
     e.preventDefault();
   }
 
+  scrollToBottom() {
+    this.el.scrollIntoView({ behavior: 'smooth' });
+  }
+
   render() {
     const { club, user } = this.props;
     const { messageValue, messages } = this.state;
     return (
-    <Modal header={`${club.name} Chat`} fixedFooter trigger={<Button>Group Chat</Button>}>
+    <Modal header={`${club.name} Chat`} options={{onOpenEnd: this.scrollToBottom}} fixedFooter trigger={<Button>Group Chat</Button>}>
       <Row style={{height: '69%', overflowY: 'scroll'}}>
         <Col style={{width: '100%'}}>
           <MessageList messages={messages} user={user} />
+          <div ref={el => { this.el = el; }} />
         </Col>
       </Row>
       <Row>
