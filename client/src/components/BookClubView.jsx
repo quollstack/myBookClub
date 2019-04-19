@@ -1,4 +1,5 @@
 import React from 'react';
+import ModalChat from './ModalChat.jsx';
 import {
   Row,
   Col,
@@ -141,7 +142,7 @@ const BookClubView = ({
         </Col>
   </Row>
     <Row>
-      <Col s={6}>
+      <Col s={4}>
       <Modal trigger={
           <Button>Add A Comment!</Button>
         }>
@@ -149,7 +150,10 @@ const BookClubView = ({
               <Button className="modal-close" onClick={ submitComment }  >Add Comment</Button> 
       </Modal>
       </Col>
-      <Col s={6}>
+      <Col s={4}>
+        <ModalChat club={club} user={user} />
+      </Col>
+      <Col s={4}>
         <h5>Comments</h5>
       </Col>
     </Row>
