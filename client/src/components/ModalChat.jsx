@@ -1,12 +1,14 @@
 import React from 'react';
-import { TextInput, Modal, Button, Row, Col } from 'react-materialize';
-import Textarea from 'react-materialize/lib/Textarea';
+import MessageList from './MessageList.jsx';
+import { Textarea, Modal, Button, Row, Col } from 'react-materialize';
+import fakeMessages from '../../../database/sample-data/fakeMessages';
 
 class ModalChat extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       messageValue: '',
+      messages: fakeMessages
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -26,7 +28,9 @@ class ModalChat extends React.Component {
     const newMessage = {
       text: messageValue,
       authorId: user.id,
+      author: user.username,
       group: club.name,
+      groupId: club.id,
     }
     console.log(newMessage);
     this.setState({
@@ -37,18 +41,18 @@ class ModalChat extends React.Component {
 
   render() {
     const { club, user } = this.props;
-    const { messageValue } = this.state;
+    const { messageValue, messages } = this.state;
     return (
     <Modal header={`${club.name} Chat`} fixedFooter trigger={<Button>Group Chat</Button>}>
-      <Row style={{height: '70%', overflowY: "scroll"}}>
-        <Col>
-          <p>blablhablhasbalhslahjhbkajb</p>
+      <Row style={{height: '69%', overflowY: 'scroll'}}>
+        <Col style={{width: '100%'}}>
+          <MessageList messages={messages} user={user} />
         </Col>
       </Row>
       <Row>
         <Col style={{width: '100%'}}>
           <form onSubmit={this.handleSubmit}>
-            <Textarea value={messageValue} onChange={this.handleChange} icon="chat" placeholder="Enter message..." />
+            <Textarea s={11} m={11} l={11} xl={11} value={messageValue} onChange={this.handleChange} icon="chat" placeholder="Enter message..." />
             <Button floating type="submit" className="teal" waves="light" icon="send" />
           </form>
         </Col>
