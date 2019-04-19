@@ -542,7 +542,7 @@ class Landing extends React.Component {
   } 
 
   handleNextMeeting (nextMeeting) {
-    this.state.nextMeeting = nextMeeting + " 19:00:00";
+    this.state.nextMeeting = nextMeeting.split('T')[0] + ' ' + nextMeeting.split('T')[1] + ":00";
     this.setNextMeeting();
     console.log(this.state.nextMeeting);
   }
