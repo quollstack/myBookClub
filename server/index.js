@@ -33,6 +33,7 @@ const {
   removeUserFromGroup,
   deseralizeUser,
   addMeetingToGroup,
+  addMessage,
 } = require('../database/helpers')
 
 
@@ -371,8 +372,13 @@ io.on('connection', (socket) => {
   console.log('a user connected')
 
   socket.on('SEND_MESSAGE', (data) => {
-    // add message to database
-    io.emit('RECIEVE_MESSAGE', data)
+    addMessage(data)
+      .then(() => {
+        io.emit('RECIEVE_MESSAGE', data)
+      })
+      .catch((error) => {
+        console.error(error);
+      })
   })
 })
 

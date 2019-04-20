@@ -282,6 +282,10 @@ const makePoll = (groupId, bookIds) => {
   
 }
 
+const addMessage = (message) => {
+  return Message.create(message);
+}
+
 module.exports = {
   verifyUser,
   createNewGroup,
@@ -299,4 +303,5 @@ module.exports = {
   removeUserFromGroup,
   deseralizeUser,
   addMeetingToGroup,
+  addMessage,
 };
