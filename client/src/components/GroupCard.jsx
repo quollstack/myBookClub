@@ -1,7 +1,7 @@
 import React from 'react';
 import { Row, Col, Icon, DatePicker } from 'react-materialize';
 
-const GroupCard = ({ club, book, userId }) => {
+const GroupCard = ({ club, book, userId, nextMeeting }) => {
   if (book && club) {
     return (
       <div className="card large groupcard">
@@ -36,7 +36,7 @@ const GroupCard = ({ club, book, userId }) => {
         </Row>
         <Row>
           <Col>
-            Next Meeting: {club.nextMeeting || 'No meetings scheduled'}
+            Next Meeting: {club.nextMeeting || 'no date selected'}
           </Col>
         </Row>
       </div>
