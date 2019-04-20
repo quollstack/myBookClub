@@ -32,6 +32,7 @@ const {
   deleteGroup,
   removeUserFromGroup,
   deseralizeUser,
+  addMeetingToGroup,
 } = require('../database/helpers')
 
 
@@ -225,7 +226,11 @@ app.patch('/groups/removeUser', (req, res) => {
 
 app.patch('/groups/nextMeeting', (req, res) => {
   console.log(req.body)
-  res.send('done')
+  addMeetingToGroup(req.body.groupId, req.body.nextMeeting)
+  .then ((results) => {
+    res.send('done');
+  })
+  
 })
 
 /**
