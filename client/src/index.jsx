@@ -35,6 +35,7 @@ class Landing extends React.Component {
       autocompleteObject: {},
       clubBookComments: [],
       clubBookComment: '',
+      nextMeeting: '',
     };
 
     this.renderMain = this.renderMain.bind(this);
@@ -58,6 +59,8 @@ class Landing extends React.Component {
     this.getGroupComments = this.getGroupComments.bind(this); //gets all comments in given group, for use in rendering comments on click of a group card
     this.logout = this.logout.bind(this);
     this.addBookToGroup = this.addBookToGroup.bind(this);
+    this.handleNextMeeting = this.handleNextMeeting.bind(this);
+    this.setNextMeeting = this.setNextMeeting.bind(this);
   }
 
   componentDidMount() {
@@ -537,6 +540,24 @@ class Landing extends React.Component {
     })
   } 
 
+  handleNextMeeting (nextMeeting) {
+    nextMeeting = nextMeeting.split('T')[0] + ' ' + nextMeeting.split('T')[1] + ":00";
+    this.setState({ nextMeeting: nextMeeting })
+    this.setNextMeeting(nextMeeting);
+    console.log(this.state.nextMeeting);
+  }
+
+  setNextMeeting (nextMeeting) {
+    axios.patch('/groups/nextMeeting', {
+      groupId: this.state.currentClub.id,
+      nextMeeting: nextMeeting,
+    })
+    .then(() => {
+      // console.log(this.state.user.id)
+      this.getGroups(this.state.user.id)
+    })
+  }
+
 
   renderMain() {
     const {
@@ -545,12 +566,13 @@ class Landing extends React.Component {
       sampleData,
       currentBook,
       currentClub,
-      clubBookComments, 
-      clubBookComment,  
+      clubBookComments,
+      clubBookComment,
       currentClubUsers,
       user,
       bookSearchChoice,
       bookSearchResults,
+      nextMeeting,
     } = this.state;
     if (view === 'groups') {
       return (
@@ -561,6 +583,7 @@ class Landing extends React.Component {
           clubs={bookClubs}
           books={sampleData}
           userId={user.id}
+          nextMeeting={nextMeeting}
         />
       );
     } else if (view === 'settings') {
@@ -576,6 +599,8 @@ class Landing extends React.Component {
         book={currentBook}
         userList={currentClubUsers}
         user={user}
+        nextMeeting={nextMeeting}
+        setNextMeeting={this.setNextMeeting}
         addBookToGroup={this.addBookToGroup}
         handleBookSearchInput={this.handleBookSearchInput}
         handleBookSearchSubmit={this.handleBookSearchSubmit}
@@ -586,6 +611,7 @@ class Landing extends React.Component {
         clubBookComment={clubBookComment} 
         handleCommentText={this.handleCommentText} 
         submitComment={this.submitComment}
+        handleNextMeeting={this.handleNextMeeting}
       />;
     }
   }
@@ -600,6 +626,7 @@ class Landing extends React.Component {
       bookSearchResults,
       autocompleteObject,
       bookSearchChoice,
+      nextMeeting,
     } = this.state; 
 
     if (!loggedIn) {
@@ -609,6 +636,7 @@ class Landing extends React.Component {
         <div>
           <LeftBar
             book={bookClubs.length ? bookClubs[0].book : {}}
+            nextMeeting={nextMeeting}
             club={bookClubs[0]}
             chooseView={this.chooseView}
             chooseClub={this.chooseClub}

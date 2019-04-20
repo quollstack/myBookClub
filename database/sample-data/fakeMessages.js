@@ -1,0 +1,51 @@
+module.exports = [
+  {
+    text: 'Hello!',
+    authorId: 1,
+    author: 'Adam Hebert',
+    group: "Adam's Club",
+    groupId: 1,
+  },
+  {
+    text: 'Guten Tag!',
+    authorId: 1,
+    author: 'Adam Hebert',
+    group: "Adam's Club",
+    groupId: 1,
+  },
+  {
+    text: 'Blah!',
+    authorId: 1,
+    author: 'Adam Hebert',
+    group: "Adam's Club",
+    groupId: 1,
+  },
+  {
+    text: 'Lorem ipsum!',
+    authorId: 1,
+    author: 'Adam Hebert',
+    group: "Adam's Club",
+    groupId: 1,
+  },
+  {
+    text: 'ZA WARUDO!',
+    authorId: 1,
+    author: 'Adam Hebert',
+    group: "Adam's Club",
+    groupId: 1,
+  },
+  {
+    text: 'ZA WARUDO!',
+    authorId: 1,
+    author: 'Who Cares',
+    group: "Adam's Club",
+    groupId: 1,
+  },
+  {
+    text: 'ZA WARUDO!',
+    authorId: 1,
+    author: 'Who Cares',
+    group: "Adam's Club",
+    groupId: 1,
+  },
+]

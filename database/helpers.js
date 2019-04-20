@@ -272,11 +272,18 @@ const removeUserFromGroup = (userId, groupId) => {
   });
 }
 
+const addMeetingToGroup = (groupId, nextMeeting) => {
+return Group.update(
+  {nextMeeting: nextMeeting}, 
+  {where: {id: groupId}})
+}
+
 /**
  * Can make a poll of up to four books. presumes that the books are already in the database
  * @param {*} groupId - the id number of the group
  * @param {*} bookIds - an array of book ids that are being added to the poll.
  */
+
 const makePoll = (groupId, bookIds) => {
   const bookAmount = bookIds.length;
   if(bookAmount < 2) {
@@ -391,4 +398,5 @@ module.exports = {
   deleteGroup,
   removeUserFromGroup,
   deseralizeUser,
+  addMeetingToGroup,
 };
