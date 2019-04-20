@@ -33,6 +33,10 @@ const {
   removeUserFromGroup,
   deseralizeUser,
   addMeetingToGroup,
+  getPoll,
+  makePoll,
+  addVote,
+  endPoll,
   addMessage,
   getGroupMessages,
 } = require('../database/helpers')
@@ -58,6 +62,7 @@ app.use(session({ secret: "cats" }));
 app.use(express.static(path.join(__dirname, '../client/dist')));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use('/poll', require('./poll'));
 
 /**
  * Serializes the user by id to encode a token
@@ -76,6 +81,39 @@ passport.deserializeUser(function(id, done) {
     done(err, user);
   });
 });
+
+// // makes a poll
+// app.post('/poll/make', (req, res) => {
+//   const {groupId, bookIds} = req.body;
+//   return makePoll(groupId, bookIds)
+//       .then(() => 
+//           res.sendStatus(201)
+//       );
+// });
+
+// // sends a poll to the client
+// app.get('/poll/get', (req, res) => {
+//   const {groupId} = req.body;
+//   return getPoll(groupId)
+//       .then(res.json);
+// });
+
+// // adds a vote
+// app.patch('/poll/addVote', (req, res) => {
+//   const {userId, groupId, bookId} = req.body;
+//   return addVote(userId, groupId, bookId)
+//       // sends the poll back to the server
+//       .then(res.json);
+// })
+
+// // deletes a poll by the poll id
+// app.post('/poll/delete', (req, res) => {
+//   const {pollId} = req.body;
+//   return endPoll(pollId)
+//       .then(() =>
+//           res.sendStatus(200)
+//       );
+// })
 
 /**
  * 

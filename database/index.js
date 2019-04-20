@@ -3,6 +3,8 @@ const Sequelize = require('sequelize');
 require('dotenv').config(); // required dotenv for access to environmental variables
 
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.MASTER_USER, process.env.DB_PASSWORD, {
+  host: process.env.HOST,
+  port: process.env.DATABASE_PORT,
   dialect: 'mysql',
   logging: false
 })
@@ -100,6 +102,10 @@ Poll.belongsTo(Book, {as: 'book1'});
 Poll.belongsTo(Book, {as: 'book2'});
 Poll.belongsTo(Book, {as: 'book3'});
 Poll.belongsTo(Book, {as: 'book4'});
+Book.hasMany(Poll, {as: "book1"});
+Book.hasMany(Poll, {as: "book2"});
+Book.hasMany(Poll, {as: "book3"});
+Book.hasMany(Poll, {as: "book4"});
 Group.hasOne(Poll);
 Poll.belongsTo(Group);
 
@@ -147,7 +153,7 @@ Group.belongsToMany(Book, {through: 'books_groups'});
 Book.belongsToMany(Group, {through: 'books_groups'});
 Poll.hasOne(UserGroup);
 UserGroup.belongsTo(Poll);
-UserGroup.belongsTo(Book, {as: 'selectedBookId'})
+UserGroup.belongsTo(Book, {as: 'selectedBook'});
 UserGroup.belongsTo(User);
 UserGroup.belongsTo(Group);
 User.hasMany(UserGroup);
