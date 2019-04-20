@@ -34,13 +34,16 @@ class ModalChat extends React.Component {
   }
 
   addMessage(message) {
-    console.log(message);
-    this.setState({
-      messages: [...this.state.messages, message]
-    });
+    const { name: clubName } = this.props.club;
+    if (message.group === clubName) {
+      this.setState({
+        messages: [...this.state.messages, message]
+      });
+    }
   }
 
   handleSubmit(e) {
+    e.preventDefault();
     const { messageValue } = this.state;
     const { club, user } = this.props;
     const newMessage = {
@@ -54,7 +57,10 @@ class ModalChat extends React.Component {
     this.setState({
       messageValue: ''
     });
-    e.preventDefault();
+  }
+
+  componentDidUpdate() {
+    this.scrollToBottom();
   }
 
   scrollToBottom() {
