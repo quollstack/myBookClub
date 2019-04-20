@@ -371,16 +371,18 @@ const addVote = (userId, groupId, bookId) => {
           })
       }
     })
-}
+};
 
 const endPoll = pollId => {
   return Poll.findOne({where: {id: pollId}})
   .then(poll => poll.destroy())
-  .then(poll => UserGroup.findAll({where: {groupId: poll.groupId}}).then())
+  .then(poll => UserGroup.findAll({where: {groupId: poll.groupId}}))
   .then(usergroups_polled => usergroups_polled.forEach(usergroup => {
     usergroup.setSelectedBook(null);
   }));
-}
+};
+
+const getPoll = groupId => Poll.findOne({where: {groupId}});
 
 module.exports = {
   verifyUser,
@@ -399,4 +401,8 @@ module.exports = {
   removeUserFromGroup,
   deseralizeUser,
   addMeetingToGroup,
+  makePoll,
+  addVote,
+  endPoll,
+  getPoll,
 };

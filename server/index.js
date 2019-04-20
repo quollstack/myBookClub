@@ -15,6 +15,7 @@ const db = require('../database');
 const session = require("express-session");
 const { json } = require('../database/sample-data/sample.js');
 const { generateToken, sendToken } = require ('./utils/utils2/token.utils')
+const poll = require('./poll');
 const {
   verifyUser,
   createNewGroup,
@@ -55,6 +56,7 @@ app.use(session({ secret: "cats" }));
 app.use(express.static(path.join(__dirname, '../client/dist')));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use('/poll', poll);
 
 /**
  * Serializes the user by id to encode a token
