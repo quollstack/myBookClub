@@ -344,7 +344,7 @@ app.get('/logout', function (req, res){
   });
 });
 
-app.listen(3000, () => {
-  console.warn('listening on port 3000!');
+app.listen(process.env.PORT, () => {
+  console.warn(`listening on port ${process.env.PORT}!`);
 });
 

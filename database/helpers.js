@@ -8,6 +8,7 @@ const {
   BookGroup,
   UserBook,
   UserGroup,
+  Poll,
 } = require('./index.js');
 
 // Check or Add new user to the database.
@@ -271,8 +272,107 @@ const removeUserFromGroup = (userId, groupId) => {
   });
 }
 
+/**
+ * Can make a poll of up to four books. presumes that the books are already in the database
+ * @param {*} groupId - the id number of the group
+ * @param {*} bookIds - an array of book ids that are being added to the poll.
+ */
 const makePoll = (groupId, bookIds) => {
-  
+  const bookAmount = bookIds.length;
+  if(bookAmount < 2) {
+    console.error("a poll must contain atleast two books");
+    return;
+  }
+  return Group.findOne({where: {id: groupId}})
+    .then(group => {
+      return group.getPoll()
+        .then(poll => {
+          if(poll) {
+            console.error("there is currently an active poll"); ////////////////////////////////// remove after testing.
+            return "there is currently an active poll";
+          }
+          return group.getUsers_groups()
+            .then(usersGroups => {
+              let newPollObj = {
+                currentVotes: 0,
+                maxVotes: usersGroups.length,
+                totalBooks: bookAmount,
+                groupId,
+              };
+              // adds the books to the book Ids and sets the corrisponding book count to zero.
+              bookIds.forEach((bookId, index) => {
+                newPollObj["book" + (index + 1) + "Count"] = 0;
+                newPollObj[`book${index + 1}Id`] = bookId;
+              })
+              return Poll.create(newPollObj)
+                .then(newPoll => {
+                  // creates a set of unfulfilled promises to make sure that the newPollObj.id gets added to all the userGroups before completing.
+                  usersGroups.forEach(userGroup => userGroup.setPoll(newPoll.id));
+                  return newPoll;
+                })
+            })
+        })
+    })
+};
+
+const addVote = (userId, groupId, bookId) => {
+  return UserGroup.findOne({where: {userId, groupId}})
+    .then(usergroup_polled => {
+      if(usergroup_polled.selectedBookId) {
+        if(usergroup_polled.selectedBookId === bookId) {
+          return usergroup_polled.getPoll();
+        }
+        return usergroup_polled.getPoll()
+          .then(poll => {
+            let oldBook = 0;
+            // finds the number of the old book in the poll table
+            for(var i = 1; i <= 4; i++) {
+              if(poll[`book${i}Id`] === usergroup_polled.selectedBookId) {
+                oldBook = i;
+              } 
+            }
+            // adds a count to the new book's poll and removes a count from the old book
+            for(var i = 1; i <= 4; i++) {
+              if(poll[`book${i}Id`] === bookId) {
+                return poll.update({
+                  [`book${i}Count`]: poll[`book${i}Count`] + 1,
+                  [`book${oldBook}Count`]: poll[`book${oldBook}Count`] - 1,
+                },
+                {
+                  fields: [`book${i}Count`, `book${oldBook}Count`]
+                })
+                  .then(() => usergroup_polled.setSelectedBook(bookId))
+              }
+            }
+          })
+      } else {
+        return usergroup_polled.setSelectedBook(bookId)
+          .then(() => usergroup_polled.getPoll())
+          .then(poll => {
+            // adds to poll
+            for(var i = 1; i <= 4; i++) {
+              if(poll[`book${i}Id`] === bookId) {
+                return poll.update({
+                  [`book${i}Count`]: poll[`book${i}Count`] + 1,
+                  currentVotes: poll.currentVotes + 1
+                }, 
+                {
+                  fields: [`book${i}Count`, 'currentVotes']
+                });
+              }
+            }
+          })
+      }
+    })
+}
+
+const endPoll = pollId => {
+  return Poll.findOne({where: {id: pollId}})
+  .then(poll => poll.destroy())
+  .then(poll => UserGroup.findAll({where: {groupId: poll.groupId}}).then())
+  .then(usergroups_polled => usergroups_polled.forEach(usergroup => {
+    usergroup.setSelectedBook(null);
+  }));
 }
 
 module.exports = {
