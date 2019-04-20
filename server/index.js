@@ -34,6 +34,7 @@ const {
   deseralizeUser,
   addMeetingToGroup,
   addMessage,
+  getGroupMessages,
 } = require('../database/helpers')
 
 
@@ -365,6 +366,10 @@ app.get('/logout', function (req, res){
 app.get('/messages/:groupName', function (req, res) {
   const {groupName} = req.params;
   // get messages from database based on group name
+  getGroupMessages(groupName)
+    .then((messages) => {
+      res.send(messages);
+    })
   // send them back to the client
 })
 

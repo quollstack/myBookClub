@@ -286,6 +286,10 @@ const addMessage = (message) => {
   return Message.create(message);
 }
 
+const getGroupMessages = (groupName) => {
+  return Message.findAll({where: {group: groupName}});
+}
+
 module.exports = {
   verifyUser,
   createNewGroup,
@@ -304,4 +308,5 @@ module.exports = {
   deseralizeUser,
   addMeetingToGroup,
   addMessage,
+  getGroupMessages,
 };
