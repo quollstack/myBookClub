@@ -103,6 +103,27 @@ Poll.belongsTo(Book, {as: 'book4'});
 Group.hasOne(Poll);
 Poll.belongsTo(Group);
 
+class Message extends Model {}
+Message.init({
+  text: {
+    type: Sequelize.TEXT,
+    allowNull: false,
+  },
+  author: {
+    type: Sequelize.TEXT,
+    allowNull: false,
+  },
+  group: {
+    type: Sequelize.TEXT,
+    allowNull: false,
+  }
+}, {
+  sequelize,
+  modelName: 'message'
+})
+User.hasMany(Message);
+Group.hasMany(Message);
+
 const UserGroup = sequelize.define('users_groups');
 const UserBook = sequelize.define('users_books');
 const BookGroup = sequelize.define('books_groups');
@@ -148,4 +169,5 @@ module.exports = {
   UserBook,
   BookGroup,
   Poll,
+  Message
 };
