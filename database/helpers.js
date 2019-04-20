@@ -322,6 +322,12 @@ const makePoll = (groupId, bookIds) => {
     })
 };
 
+/**
+ * 
+ * @param {*} userId - user voting
+ * @param {*} groupId - group with the poll
+ * @param {*} bookId - book being voted on
+ */
 const addVote = (userId, groupId, bookId) => {
   return UserGroup.findOne({where: {userId, groupId}})
     .then(usergroup_polled => {
@@ -373,6 +379,10 @@ const addVote = (userId, groupId, bookId) => {
     })
 };
 
+/**
+ * 
+ * @param {*} pollId 
+ */
 const endPoll = pollId => {
   return Poll.findOne({where: {id: pollId}})
   .then(poll => poll.destroy())
@@ -382,6 +392,10 @@ const endPoll = pollId => {
   }));
 };
 
+/**
+ * 
+ * @param {*} groupId 
+ */
 const getPoll = groupId => Poll.findOne({where: {groupId}});
 
 module.exports = {
