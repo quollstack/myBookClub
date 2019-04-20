@@ -53,6 +53,7 @@ class ModalChat extends React.Component {
       group: club.name,
       groupId: club.id,
     }
+    console.log(newMessage);
     this.socket.emit('SEND_MESSAGE', newMessage);
     this.setState({
       messageValue: ''
