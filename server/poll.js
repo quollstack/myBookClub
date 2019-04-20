@@ -15,16 +15,18 @@ router.post('/make', (req, res) => {
 router.get('/get', (req, res) => {
     const {groupId} = req.body;
     return getPoll(groupId)
-        .then(res.json);
+        .then(poll => 
+            res.json(poll)
+        );
 });
 
 // adds a vote
 router.patch('/addVote', (req, res) => {
-    const {userId, groupId, bookId} = req;
+    const {userId, groupId, bookId} = req.body;
     return addVote(userId, groupId, bookId)
         // sends the poll back to the server
-        .then(res.json);
-})
+        .then(poll => res.json(poll));
+});
 
 // deletes a poll by the poll id
 router.post('/delete', (req, res) => {
@@ -33,6 +35,6 @@ router.post('/delete', (req, res) => {
         .then(() =>
             res.sendStatus(200)
         );
-})
+});
 
 module.exports = router;
