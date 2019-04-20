@@ -8,6 +8,7 @@ const {
   BookGroup,
   UserBook,
   UserGroup,
+  Message
 } = require('./index.js');
 
 // Check or Add new user to the database.

@@ -34,8 +34,8 @@ class ModalChat extends React.Component {
   }
 
   addMessage(message) {
-    const { name: clubName } = this.props.club;
-    if (message.group === clubName) {
+    const { id: clubId } = this.props.club;
+    if (message.groupId === clubId) {
       this.setState({
         messages: [...this.state.messages, message]
       });
@@ -48,7 +48,7 @@ class ModalChat extends React.Component {
     const { club, user } = this.props;
     const newMessage = {
       text: messageValue,
-      authorId: user.id,
+      userId: user.id,
       author: user.username,
       group: club.name,
       groupId: club.id,
