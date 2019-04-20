@@ -1,7 +1,10 @@
 import React from 'react';
+import * as ReactDOM from 'react-dom';
+import socketIOClient from "socket.io-client";
 import MessageList from './MessageList.jsx';
 import { Textarea, Modal, Button, Row, Col } from 'react-materialize';
 import fakeMessages from '../../../database/sample-data/fakeMessages';
+const io = socketIOClient;
 
 class ModalChat extends React.Component {
   constructor(props) {
@@ -11,8 +14,16 @@ class ModalChat extends React.Component {
       messages: fakeMessages
     };
 
+    this.socket = io();
+
+    this.socket.on('RECIEVE_MESSAGE', (message) => {
+      this.addMessage(message);
+    })
+
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.addMessage = this.addMessage.bind(this);
+    this.scrollToBottom = this.scrollToBottom.bind(this);
   }
 
   handleChange(e) {
@@ -22,7 +33,17 @@ class ModalChat extends React.Component {
     })
   }
 
+  addMessage(message) {
+    const { name: clubName } = this.props.club;
+    if (message.group === clubName) {
+      this.setState({
+        messages: [...this.state.messages, message]
+      });
+    }
+  }
+
   handleSubmit(e) {
+    e.preventDefault();
     const { messageValue } = this.state;
     const { club, user } = this.props;
     const newMessage = {
@@ -32,21 +53,29 @@ class ModalChat extends React.Component {
       group: club.name,
       groupId: club.id,
     }
-    console.log(newMessage);
+    this.socket.emit('SEND_MESSAGE', newMessage);
     this.setState({
       messageValue: ''
     });
-    e.preventDefault();
+  }
+
+  componentDidUpdate() {
+    this.scrollToBottom();
+  }
+
+  scrollToBottom() {
+    this.el.scrollIntoView({ behavior: 'smooth' });
   }
 
   render() {
     const { club, user } = this.props;
     const { messageValue, messages } = this.state;
     return (
-    <Modal header={`${club.name} Chat`} fixedFooter trigger={<Button>Group Chat</Button>}>
+    <Modal header={`${club.name} Chat`} options={{onOpenEnd: this.scrollToBottom}} fixedFooter trigger={<Button>Group Chat</Button>}>
       <Row style={{height: '69%', overflowY: 'scroll'}}>
         <Col style={{width: '100%'}}>
           <MessageList messages={messages} user={user} />
+          <div ref={el => { this.el = el; }} />
         </Col>
       </Row>
       <Row>

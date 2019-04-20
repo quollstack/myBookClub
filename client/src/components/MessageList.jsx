@@ -4,7 +4,7 @@ import { Collection } from 'react-materialize';
 
 const MessageList = ({messages, user}) => (
   <Collection style={{border: 'none'}}>
-    {messages.reverse().map((message) => {
+    {messages.map((message) => {
       return <MessageListItem message={message} user={user}/>;
     })}
   </Collection>

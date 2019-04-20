@@ -37,8 +37,9 @@ const {
 } = require('../database/helpers')
 
 
-
 const app = express();
+const http = require('http').Server(app);
+const io =  require('socket.io')(http);
 
 const corsOption = {
   origin: true,
@@ -356,7 +357,30 @@ app.get('/logout', function (req, res){
   });
 });
 
-app.listen(process.env.PORT, () => {
-  console.warn(`listening on port ${process.env.PORT}!`);
+/**
+ * socket.io stuff here
+ */
+
+/** 
+ * this is just to pseudocode messages endpoint to get msgs
+ * app.get('/messages/:groupName', function (req, res) {
+ *   const {groupName} = req.params;
+ *   get messages from database based on group name
+ *   send them back to the client
+ * })
+ * 
+ */
+
+io.on('connection', (socket) => {
+  console.log('a user connected')
+
+  socket.on('SEND_MESSAGE', (data) => {
+    // add message to database
+    io.emit('RECIEVE_MESSAGE', data)
+  })
+})
+
+http.listen(3000, () => {
+  console.warn('listening on port 3000!');
 });
 
