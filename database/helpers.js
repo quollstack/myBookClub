@@ -9,6 +9,7 @@ const {
   UserBook,
   UserGroup,
   Poll,
+  Message
 } = require('./index.js');
 
 // Check or Add new user to the database.
@@ -398,6 +399,14 @@ const endPoll = pollId => {
  */
 const getPoll = groupId => Poll.findOne({where: {groupId}});
 
+const addMessage = (message) => {
+  return Message.create(message);
+}
+
+const getGroupMessages = (groupName) => {
+  return Message.findAll({where: {group: groupName}});
+}
+
 module.exports = {
   verifyUser,
   createNewGroup,
@@ -419,4 +428,6 @@ module.exports = {
   addVote,
   endPoll,
   getPoll,
+  addMessage,
+  getGroupMessages,
 };
