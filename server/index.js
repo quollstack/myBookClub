@@ -82,39 +82,6 @@ passport.deserializeUser(function(id, done) {
   });
 });
 
-// // makes a poll
-// app.post('/poll/make', (req, res) => {
-//   const {groupId, bookIds} = req.body;
-//   return makePoll(groupId, bookIds)
-//       .then(() => 
-//           res.sendStatus(201)
-//       );
-// });
-
-// // sends a poll to the client
-// app.get('/poll/get', (req, res) => {
-//   const {groupId} = req.body;
-//   return getPoll(groupId)
-//       .then(res.json);
-// });
-
-// // adds a vote
-// app.patch('/poll/addVote', (req, res) => {
-//   const {userId, groupId, bookId} = req.body;
-//   return addVote(userId, groupId, bookId)
-//       // sends the poll back to the server
-//       .then(res.json);
-// })
-
-// // deletes a poll by the poll id
-// app.post('/poll/delete', (req, res) => {
-//   const {pollId} = req.body;
-//   return endPoll(pollId)
-//       .then(() =>
-//           res.sendStatus(200)
-//       );
-// })
-
 /**
  * 
  */
