@@ -282,45 +282,77 @@ return Group.update(
 /**
  * Can make a poll of up to four books. presumes that the books are already in the database
  * @param {*} groupId - the id number of the group
- * @param {*} bookIds - an array of book ids that are being added to the poll.
+ * @param {*} books - array of unstored books
  */
 
-const makePoll = (groupId, bookIds) => {
-  const bookAmount = bookIds.length;
-  if(bookAmount < 2) {
-    console.error("a poll must contain atleast two books");
-    return;
-  }
-  return Group.findOne({where: {id: groupId}})
-    .then(group => {
-      return group.getPoll()
-        .then(poll => {
-          if(poll) {
-            console.error("there is currently an active poll"); ////////////////////////////////// remove after testing.
-            return "there is currently an active poll";
-          }
-          return group.getUsers_groups()
-            .then(usersGroups => {
-              let newPollObj = {
-                currentVotes: 0,
-                maxVotes: usersGroups.length,
-                totalBooks: bookAmount,
-                groupId,
-              };
-              // adds the books to the book Ids and sets the corrisponding book count to zero.
-              bookIds.forEach((bookId, index) => {
-                newPollObj["book" + (index + 1) + "Count"] = 0;
-                newPollObj[`book${index + 1}Id`] = bookId;
-              })
-              return Poll.create(newPollObj)
-                .then(newPoll => {
-                  // creates a set of unfulfilled promises to make sure that the newPollObj.id gets added to all the userGroups before completing.
-                  usersGroups.forEach(userGroup => userGroup.setPoll(newPoll.id));
-                  return newPoll;
-                })
-            })
+const makePoll = (groupId, books) => {
+  const bookPromises = books.map(book => {
+    const {
+      isbn,
+      title,
+      author,
+      published,
+      description,
+      urlInfo,
+      image,
+    } = book
+    return new Promise((res, rej) => {
+      Book.findOrCreate({
+        where: { isbn },
+        defaults: {
+          title,
+          author,
+          published,
+          urlInfo,
+          description,
+          image,
+        },
+      })
+      .then(book => {
+          res(book)
         })
     })
+  })
+  return Promise.all(bookPromises)
+  // returns an array of the created books
+  .then(bookRows => {
+    const bookIds = bookRows.map(book => book[0].id)
+    const bookAmount = bookIds.length;
+    if(bookAmount < 2) {
+      console.error("a poll must contain atleast two books");
+      return;
+    }
+    return Group.findOne({where: {id: groupId}})
+      .then(group => {
+        return group.getPoll()
+          .then(poll => {
+            if(poll) {
+              console.error("there is currently an active poll"); ////////////////////////////////// remove after testing.
+              return "there is currently an active poll";
+            }
+            return group.getUsers_groups()
+              .then(usersGroups => {
+                let newPollObj = {
+                  currentVotes: 0,
+                  maxVotes: usersGroups.length,
+                  totalBooks: bookAmount,
+                  groupId,
+                };
+                // adds the books to the book Ids and sets the corrisponding book count to zero.
+                bookIds.forEach((bookId, index) => {
+                  newPollObj["book" + (index + 1) + "Count"] = 0;
+                  newPollObj[`book${index + 1}Id`] = bookId;
+                })
+                return Poll.create(newPollObj)
+                  .then(newPoll => {
+                    // creates a set of unfulfilled promises to make sure that the newPollObj.id gets added to all the userGroups before completing.
+                    usersGroups.forEach(userGroup => userGroup.setPoll(newPoll.id));
+                    return newPoll;
+                  })
+              })
+          })
+      })
+  })
 };
 
 /**
@@ -393,11 +425,28 @@ const endPoll = pollId => {
   }));
 };
 
+// endPoll(11)
+
 /**
- * 
+ * returns the poll id and the books in the poll.
  * @param {*} groupId 
  */
-const getPoll = groupId => Poll.findOne({where: {groupId}});
+const getPoll = groupId => {
+  return Poll.findOne({where: {groupId}})
+    .then(poll => {
+      let bookSearches = [];
+      for(var i = 1; i <= poll.totalBooks; i++) {
+        bookSearches.push(new Promise((res, rej) => {
+          Book.findOne({where: {id: poll[`book${i}Id`]}})
+            .then(book => res(book));
+        }))
+      }
+      return Promise.all(bookSearches)
+        .then(books => {
+          return {poll, books};
+        })
+    })
+};
 
 const addMessage = (message) => {
   return Message.create(message);

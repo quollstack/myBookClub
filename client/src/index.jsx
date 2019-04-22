@@ -36,6 +36,10 @@ class Landing extends React.Component {
       clubBookComments: [],
       clubBookComment: '',
       nextMeeting: '',
+      activePoll: null,
+      activePollBooks: [], 
+      potentialPollBooks: [],
+      potentialPoll: [],
     };
 
     this.renderMain = this.renderMain.bind(this);
@@ -61,6 +65,12 @@ class Landing extends React.Component {
     this.addBookToGroup = this.addBookToGroup.bind(this);
     this.handleNextMeeting = this.handleNextMeeting.bind(this);
     this.setNextMeeting = this.setNextMeeting.bind(this);
+    this.setActivePoll = this.setActivePoll.bind(this);
+    this.voteOnBook = this.voteOnBook.bind(this);
+    this.endPoll = this.endPoll.bind(this);
+    this.addPotentialPollBook = this.addPotentialPollBook.bind(this);
+    this.addToPotentialPoll = this.addToPotentialPoll.bind(this);
+    this.addPoll = this.addPoll.bind(this);
   }
 
   componentDidMount() {
@@ -169,12 +179,22 @@ class Landing extends React.Component {
         },
       })
       .then((result) => {
-        const userList = result.data;
-        this.setState({
-          currentClub: club,
-          currentBook: book,
-          currentClubUsers: userList,
-        });
+        axios.get('/poll/get', {
+          params: {
+            groupId: club.id
+          }
+        })
+          .then(({data}) => {
+            const {poll, books} = data;
+            const userList = result.data;
+            this.setState({
+              activePoll: poll || null,
+              activePollBooks: books || [],
+              currentClub: club,
+              currentBook: book,
+              currentClubUsers: userList,
+            });
+          })
       }).catch((err) => {
         console.error(err);
       });
@@ -356,7 +376,6 @@ class Landing extends React.Component {
  */
   addBookClub() {
     const { bookSearchChoice, createBookClubName, user } = this.state;
-    // console.log(bookSearchChoice)
     let author = bookSearchChoice.volumeInfo.authors;
     if (Array.isArray(bookSearchChoice.volumeInfo.authors)) {
       author = bookSearchChoice.volumeInfo.authors.join(', ');
@@ -385,9 +404,6 @@ class Landing extends React.Component {
       .then(response => {
         postObject.bookId = response.data.id;
       })
-      // .catch(err => {
-      //   console.log('error, line 149 index.jsx', err);
-      // })
       .then(() => {
         axios
           .post('/groups', {
@@ -544,7 +560,6 @@ class Landing extends React.Component {
     nextMeeting = nextMeeting.split('T')[0] + ' ' + nextMeeting.split('T')[1] + ":00";
     this.setState({ nextMeeting: nextMeeting })
     this.setNextMeeting(nextMeeting);
-    console.log(this.state.nextMeeting);
   }
 
   setNextMeeting (nextMeeting) {
@@ -553,11 +568,92 @@ class Landing extends React.Component {
       nextMeeting: nextMeeting,
     })
     .then(() => {
-      // console.log(this.state.user.id)
       this.getGroups(this.state.user.id)
     })
   }
 
+  addPotentialPollBook() {
+    return axios
+      .get('/books/googleapi', {
+        params: {
+          query: this.state.bookSearchInput,
+        },
+      })
+      .then(({data}) => {
+        console.log(data)
+        this.setState({
+          potentialPollBooks: data,
+        });
+      })
+      .catch(err => {
+        console.error(
+          err,
+          'server responded with error: could not complete bookSearch request',
+        );
+      });
+  }
+
+  addPoll() {
+    axios.post('/poll/make', {
+      groupId: this.state.currentClub.id, 
+      books: this.state.potentialPoll
+    })
+    .then(() => 
+    axios.get('/poll/get', {params: {groupId: this.state.currentClub.id}})
+      .then(({data}) => {
+        this.setState({
+          activePoll: data.poll,
+          activePollBooks: data.books
+        })
+      }))
+  }
+
+  setActivePoll(groupId) {
+    return axios.get('/poll/get', {params: {groupId}})
+      .then(({data}) => {
+        this.setState({
+          activePoll: data.poll,
+          activePollBooks: data.books
+        })
+      })
+  }
+
+  voteOnBook(bookId, groupId, userId) {
+    axios.patch('/poll/addVote', {bookId, groupId, userId})
+    .then(() => 
+      axios.get('/poll/get', {params: {groupId}})
+        .then(({data}) => {
+          this.setState({
+            activePoll: data.poll,
+            activePollBooks: data.books
+          })
+        })
+    )
+  }
+  
+  addToPotentialPoll(book) {
+    const bookQuery = {
+      author: book.volumeInfo.authors.join(', '),
+      title: book.volumeInfo.title,
+      published: book.volumeInfo.publishedDate.slice(0, 4),
+      image: book.volumeInfo.imageLinks.thumbnail,
+      urlInfo: book.volumeInfo.infoLink,
+      description: book.volumeInfo.description,
+      isbn: book.volumeInfo.industryIdentifiers.filter(
+        id => id.type === 'ISBN_13',
+      )[0].identifier,
+    }
+    this.setState({
+      potentialPoll: this.state.potentialPoll.concat([bookQuery])
+    })
+  }
+
+  endPoll(pollId) {
+    axios.post('/poll/delete', {pollId})
+      .then(({data}) => {
+        this.setActivePoll(this.state.currentClub.id)
+      })
+  }
 
   renderMain() {
     const {
@@ -573,6 +669,10 @@ class Landing extends React.Component {
       bookSearchChoice,
       bookSearchResults,
       nextMeeting,
+      activePoll,
+      activePollBooks,
+      potentialPollBooks,
+      potentialPoll,
     } = this.state;
     if (view === 'groups') {
       return (
@@ -600,6 +700,10 @@ class Landing extends React.Component {
         userList={currentClubUsers}
         user={user}
         nextMeeting={nextMeeting}
+        activePoll={activePoll}
+        activePollBooks={activePollBooks}
+        potentialPollBooks={potentialPollBooks}
+        potentialPoll={potentialPoll}
         setNextMeeting={this.setNextMeeting}
         addBookToGroup={this.addBookToGroup}
         handleBookSearchInput={this.handleBookSearchInput}
@@ -612,6 +716,12 @@ class Landing extends React.Component {
         handleCommentText={this.handleCommentText} 
         submitComment={this.submitComment}
         handleNextMeeting={this.handleNextMeeting}
+        setActivePoll={this.setActivePoll}
+        voteOnBook={this.voteOnBook}
+        endPoll={this.endPoll}
+        addPotentialPollBook={this.addPotentialPollBook}
+        addToPotentialPoll={this.addToPotentialPoll}
+        addPoll={this.addPoll}
       />;
     }
   }
